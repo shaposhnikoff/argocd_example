@@ -54,11 +54,11 @@ pipeline {
          	 stage('Build Alpine base image') {
                   when {expression { params.alpine == true }}
                     steps {
-                        dir("alpine"){
+                        dir("."){
 			    sh """ echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin """
 			    sh """  docker buildx build \
   					--platform linux/arm64,linux/amd64 --push \
-  					-t docker.io/shaposhnikoff/alpine-base:latest -f Dockerfile . """
+  					-t docker.io/shaposhnikoff/argocg_example:latest -f Dockerfile . """
 				
 				
                        }
