@@ -1,16 +1,41 @@
 pipeline {
    agent  any
-	
-   
-    options {
-    ansiColor('xterm')
+
+   options {
+   ansiColor('xterm')
     }
-  
-  environment {
-               dockerhub=credentials('dockerhub') 
+   
+   parameters {
+      booleanParam(name: 'alpine', defaultValue: false, description: 'alpine base')
   }
+	
+	environment {
+               dockerhub=credentials('dockerhub') 
+            }
             
-  stages {
+   
+    stages {
+
+	    stage('Printenv') {
+            when {expression { params.PRINTENV == true }}
+            steps {
+                sh 'printenv'
+		    
+            }
+        }
+        
+        stage('AMI') {
+            environment {
+                COMMIT_ID = sh ( returnStdout: true, script: 'git rev-parse --short HEAD' )
+                BRANCH = "${GIT_BRANCH.split("/")[1]}"
+		arm_ami_base = "ami-0e052983952750fca"
+            }
+            
+     stages {
+		    
+        	    
+       
+
 		    
          	 stage('Prepare buider') {
                   when {expression { params.alpine == true }}
@@ -26,19 +51,19 @@ pipeline {
                     }
                 }
 
-         	 stage('Build image') {
-                  
+         	 stage('Build Alpine base image') {
+                  when {expression { params.alpine == true }}
                     steps {
-                        dir("."){
+                        dir("alpine"){
 			    sh """ echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin """
 			    sh """  docker buildx build \
-  					--platform linux/amd64 --push \
-  					-t docker.io/shaposhnikoff/argocd_example:latest -f Dockerfile . """
+  					--platform linux/arm64,linux/amd64 --push \
+  					-t docker.io/shaposhnikoff/alpine-base:latest -f Dockerfile . """
 				
 				
                        }
                     }
                 }
-    
-  }}}
 
+	    }
+	}}}
