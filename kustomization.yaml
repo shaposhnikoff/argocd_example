@@ -3,4 +3,4 @@ kind: Kustomization
 images:
 - name: argocd_example
   newName: docker.com/shaposhnikoff/app
-  newTag: d9c7ccb0713da882d8373169e2a1d705f5959386
+  newTag: latest
