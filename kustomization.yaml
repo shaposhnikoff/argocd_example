@@ -4,3 +4,10 @@ images:
 - name: argocd_example
   newName: docker.com/shaposhnikoff/app
   newTag: d9c7ccb0713da882d8373169e2a1d705f5959386
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> f9db84772172dd61317b2c681d810b93d23461ac
